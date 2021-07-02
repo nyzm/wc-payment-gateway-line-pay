@@ -152,12 +152,19 @@ class HPD_LinePay_Gateway extends WC_Payment_Gateway {
     public function confirm_url_callback() {
         $transaction_id = $_GET[ 'transactionId' ];
 
-        $results = get_posts( array(
-            'post_type' => 'shop_order',
-            'meta_query' => array(
-                array( 'key' => '_hpd_linepay_transactionId', 'value' => $transaction_id ),
-            ),
-        ) );
+        // $results = get_posts( array(
+        //     'post_type' => 'shop_order',
+        //     'meta_query' => array(
+        //         array( 'key' => '_hpd_linepay_transactionId', 'value' => $transaction_id ),
+        //     ),
+        // ) );
+
+        $results = wc_get_orders( array(
+			'post_type'   => 'shop_order',
+			'meta_key'     => '_hpd_linepay_transactionId',
+			'meta_compare' => '==',
+			'meta_value'   => $transaction_id
+		));
 
         if ( !$results ) {
             http_response_code( 404 );
